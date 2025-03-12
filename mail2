@@ -1,0 +1,49 @@
+import os
+import smtplib
+import logging
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+
+MAIL_TO = "darshan@infi.com"
+MAIL_FROM = "airflow@infi.com"
+MAIL_SMTP_SERVER = "smtpna.infi.com"
+MAIL_FORMAT = "plain"
+CSV_FILE_PATH = "/data/duni/file.csv"
+
+def send_mail(subject, text, attachment_path=None, to_address=MAIL_TO, from_address=MAIL_FROM, smtp_server=MAIL_SMTP_SERVER, format=MAIL_FORMAT, RaiseError=False):
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = from_address
+        msg['To'] = to_address
+        msg['Subject'] = subject
+
+        msg.attach(MIMEText(text, format))
+
+        if attachment_path and os.path.isfile(attachment_path):
+            with open(attachment_path, "rb") as attachment:
+                part = MIMEBase("application", "octet-stream")
+                part.set_payload(attachment.read())
+                encoders.encode_base64(part)
+                part.add_header("Content-Disposition", f"attachment; filename={os.path.basename(attachment_path)}")
+                msg.attach(part)
+
+        # Convert the message to a string before sending
+        email_text = msg.as_string()
+
+        with smtplib.SMTP(smtp_server) as server:
+            server.sendmail(from_address, to_address, email_text)  # Ensure email_text is a string
+            server.quit()
+
+        print("Email sent successfully.")
+    except Exception as E:
+        logging.warning("Can't send status email. Check SMTP settings: " + str(E).replace('\n', ''))
+        if RaiseError:
+            raise E
+
+if __name__ == "__main__":
+    if os.path.exists(CSV_FILE_PATH):
+        send_mail(subject="CSV File Attachment", text="Please find the attached CSV file.", attachment_path=CSV_FILE_PATH)
+    else:
+        print(f"File {CSV_FILE_PATH} does not exist.")
