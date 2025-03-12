@@ -8,3 +8,15 @@ def add_header_to_csv(file_path, output_path):
     except Exception as e:
         logging.error(f"Error adding header to CSV: {e}")
         raise e
+
+
+======
+def count_lines_in_csv(file_path):
+    """Counts the number of lines in a CSV file (excluding the header)."""
+    try:
+        with open(file_path, 'r') as file:
+            line_count = sum(1 for line in file) - 1  # Subtract 1 to exclude the header
+        return max(line_count, 0)  # Ensure it's not negative
+    except Exception as e:
+        logging.error(f"Error counting lines in CSV: {e}")
+        return 0  # Return 0 if an error occurs
