@@ -1,0 +1,9 @@
+Subject: Testing of Spark Pool and Retry Option in ACC_OPM – Cutover & Post-Cutover Plan
+
+Dear [Recipient's Name],
+
+We would like to inform you that we are testing the Spark Pool and Retry Option in ACC_OPM. The cutover for this change is scheduled for today.
+
+Once the cutover is completed, we will proceed with testing. After successful validation, we plan to implement the changes across all other DAGs.
+
+Please let us know if you have any concerns or require further details.
