@@ -1,0 +1,28 @@
+import csv
+from collections import defaultdict
+
+# File path
+file_path = "/data/duni/suppresion.csv"
+
+# Dictionary to store unique second-column values for each key
+key_dict = defaultdict(set)
+
+# Read the CSV file
+with open(file_path, 'r') as file:
+    reader = csv.reader(file)
+    for row in reader:
+        # Skip empty lines
+        if not row or len(row) != 3:
+            continue  # Skip lines that don't have exactly 3 columns
+        
+        key, value, _ = row  # Extract key and second column
+        key_dict[key].add(value)
+
+# Find keys that only have '1002' as the unique value
+all_other_suppressed = [key for key, values in key_dict.items() if values == {'1002'}]
+
+# Convert list to comma-separated string
+output = "all_other_suppressed = " + ",".join(all_other_suppressed)
+
+# Print result
+print(output)
